@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jinja2-fastapi-users"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "isinthesky", email = "hijde@naver.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/unknown/jinja2-fastapi-users#readme"
+Issues = "https://github.com/unknown/jinja2-fastapi-users/issues"
+Source = "https://github.com/unknown/jinja2-fastapi-users"
+
+[tool.hatch.version]
+path = "src/jinja2_fastapi_users/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+dev = "uvicorn src.app:app --reload"
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/jinja2_fastapi_users tests}"
+
+[tool.coverage.run]
+source_pkgs = ["jinja2_fastapi_users", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/jinja2_fastapi_users/__about__.py",
+]
+
+[tool.coverage.paths]
+jinja2_fastapi_users = ["src/jinja2_fastapi_users", "*/jinja2-fastapi-users/src/jinja2_fastapi_users"]
+tests = ["tests", "*/jinja2-fastapi-users/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
