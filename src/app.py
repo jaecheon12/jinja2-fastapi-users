@@ -6,14 +6,13 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles 
 from src.routers.user import user_router  # Updated import
+from src.routers.keyword import keyword_router  # Updated import
 # from src.routers.auth import auth_router  # Updated import
 # from src.routers.auth import bearer_transport
-from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,6 +27,12 @@ app.include_router(
     user_router,
     prefix="/user",
     tags=["user"],
+)
+
+app.include_router(
+    keyword_router,
+    prefix="/keyword",
+    tags=["keyword"],
 )
 
 # app.include_router(

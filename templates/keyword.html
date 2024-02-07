@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Keyword{% endblock %}
+
+{% block content %}
+    <h1>Keyword</h1>
+
+    {% if ERR %}
+        <div class="error-text">{{ ERR }}</div>
+    {% endif %}
+
+    <div class="div-flex-row">
+        <div class="div-flex-column">
+            <form method="POST" action="/keyword/media1">
+                <select name="search_type">
+                    <option value="code">Code</option>
+                </select>
+                <input type="text" name="code" placeholder="Search...">
+                <button type="submit">Search</button>
+            </form>
+            {% if keywords1 %}
+                <input type="text" name="code1" placeholder="Search..." value="{{ keywords1.code }}" readonly>
+                {% if keywords1.image_url %}
+                    <img src="{{ keywords1.image_url }}" alt="source" width="360" height="240"></image>
+                {% endif %}
+                <div >
+                    <h2>contents</h2>
+                    {% for item in keywords1.contents %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            
+                <div>
+                    <h2>keycode</h2>
+                    {% for item in keywords1.keycode %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            
+                <div>
+                    <h2>key_etc</h2>
+                    {% for item in keywords1.key_etc %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <form method="POST" action="/keyword/copy">
+            <input type="hidden" name="code1" value="{{ keywords1.code if keywords1 }}">
+            <input type="hidden" name="code2" value="{{ keywords2.code if keywords2 }}">
+            <img src="/static/right_arrow.png" alt="image" width="50" height="30"></image>
+            <button type="submit">Copy keyword</button>
+        </form>
+        <div class="div-flex-column">
+            <form method="POST" action="/keyword/media2">
+                <select name="search_type">
+                    <option value="code">Code</option>
+                </select>
+                <input type="text" name="code" placeholder="Search...">
+                <button type="submit">Search</button>
+            </form>
+            {% if keywords2 %}
+                <input type="text" name="code2" placeholder="Search..." value="{{ keywords2.code }}" readonly>
+                {% if keywords2.image_url %}
+                    <img src="{{ keywords2.image_url }}" alt="destination" width="360" height="240"></image>
+                {% endif %}
+                <div >
+                    <h2>contents</h2>
+                    {% for item in keywords2.contents %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            
+                <div>
+                    <h2>keycode</h2>
+                    {% for item in keywords2.keycode %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            
+                <div>
+                    <h2>key_etc</h2>
+                    {% for item in keywords2.key_etc %}
+                        <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+   </div>
+   
+{% endblock %}
