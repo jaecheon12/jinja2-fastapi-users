@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends, Request, HTTPException, Form
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from src.static.const import Iselect_media
-from src.models.db import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.models.sql_db import get_db
+from src.models.lite_db import get_lite_db, get_async_session
 from src.controllers.media import CMedia
 from src.controllers.keyword import CKeyword
+from src.controllers.logs import Clogs
 from src.static.utils import string_to_list
 from src.classes.keyword import Keywords
 from icecream import ic
@@ -22,43 +24,61 @@ ckeywords = Keywords()
 
 
 @keyword_router.post("/media1")
-async def select_media(request: Request, search_type: str = Form(...), code: str = Form(...), db: Session = Depends(get_db)):
-    
-    resKeyword = CKeyword(db).select_bycode(code)
-    resMedia = CMedia(db).selectCode(code)
-    
-    image_path = (config["G_PATH_SBIMG"] + 
-                  resMedia.Folder + "/" + 
-                  resMedia.Code + resMedia.Hash + "_y1.jpg") if resMedia else ""
-    
-    ic(image_path)
-    
-    if resKeyword:
-        ckeywords.set_keyword("keywords1", code, 
-                              string_to_list(resKeyword.Contents, True),
-                              string_to_list(resKeyword.keycode, True),
-                              string_to_list(resKeyword.kw_etc, True),
-                              image_path)
+async def select_media(request: Request, code: str = Form(...), db: Session = Depends(get_db)):
+    try:
+        resKeyword = await CKeyword(db).select_bycode(code)
+        resMedia = await CMedia(db).selectCode(code)
         
-    context = {"request": request}
-    context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-    context["keywords2"] = ckeywords.get_keywords()["keywords2"]
-        
-    return templates.TemplateResponse("keyword.html", context)
+        image_path = (config["G_PATH_SBIMG"] + 
+                    resMedia.Folder + "/" + 
+                    resMedia.Code + resMedia.Hash + "_y1.jpg") if resMedia else ""
+                
+        if resKeyword:
+            ckeywords.set_keyword("keywords1", code, 
+                                  string_to_list(resKeyword.Contents, True),
+                                  string_to_list(resKeyword.keycode, True),
+                                  string_to_list(resKeyword.kw_etc, True),
+                                  image_path)
+            
+            context = {"request": request}
+            update_context_with_keywords(context)
+                
+            return templates.TemplateResponse("keyword.html", context)
+        else:
+            context = {"request": request}
+            context["ERR"] = "Failed to find keyword content"
+            context["keywords1"] = ckeywords.init_keyword("keywords1")
+            context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+            return templates.TemplateResponse("keyword.html", context)
+    
+    except SQLAlchemyError as e:
+        ic("select_media", e)
+        db.rollback()
+        context = {"request": request}
+        context["ERR"] = str(e)
+        update_context_with_keywords(context)
+        return templates.TemplateResponse("keyword.html", context)    
+    
+    except Exception as e:
+        ic("select_media", e)
+        context = {"request": request}
+        context["ERR"] = str(e)
+        update_context_with_keywords(context)
+        return templates.TemplateResponse("keyword.html", context)
     
 
 @keyword_router.post("/media2")
 async def select_media(request: Request, search_type: str = Form(...), code: str = Form(...), db: Session = Depends(get_db)):
     try:
         
-        resKeyword = CKeyword(db).select_bycode(code)
-        resMedia = CMedia(db).selectCode(code)
+        resKeyword = await CKeyword(db).select_bycode(code)
+        resMedia = await CMedia(db).selectCode(code)
         
         image_path = (config["G_PATH_SBIMG"] + 
                     resMedia.Folder + "/" + 
                     resMedia.Code + resMedia.Hash + "_y1.jpg") if resMedia else ""
                 
-        if resKeyword and resMedia:
+        if resKeyword:
             ckeywords.set_keyword("keywords2", code, 
                                   string_to_list(resKeyword.Contents, True),
                                   string_to_list(resKeyword.keycode, True),
@@ -66,8 +86,7 @@ async def select_media(request: Request, search_type: str = Form(...), code: str
                                   image_path)
             
             context = {"request": request}
-            context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-            context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+            update_context_with_keywords(context)
                 
             return templates.TemplateResponse("keyword.html", context)
         else:
@@ -78,92 +97,126 @@ async def select_media(request: Request, search_type: str = Form(...), code: str
             return templates.TemplateResponse("keyword.html", context)
     
     except SQLAlchemyError as e:
-        ic(e)
+        ic("select_media", e)
         db.rollback()
         context = {"request": request}
         context["ERR"] = str(e)
-        context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-        context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+        update_context_with_keywords(context)
         return templates.TemplateResponse("keyword.html", context)    
     
     except Exception as e:
-        ic(e)
+        ic("select_media", e)
         context = {"request": request}
         context["ERR"] = str(e)
-        context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-        context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+        update_context_with_keywords(context)
         return templates.TemplateResponse("keyword.html", context)
 
 
 @keyword_router.post("/copy")
-async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Form(...), db: Session = Depends(get_db)):
+async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Form(...), sql: Session = Depends(get_db), lite: AsyncSession = Depends(get_async_session)):
+    context = {"request": request}
     try:
-        ic(code1, code2)
-        keyword = CKeyword(db)
+        if code1 == code2:
+            raise ValueError("Source and destination codes must be different.")
         
-        src = keyword.select_bycode(code1)
-        dst = keyword.select_bycode(code2)
+        keyword = CKeyword(sql)
+        src = await keyword.select_bycode(code1)
+        dst = await keyword.select_bycode(code2)
         
-        if src and dst:
-            dst.Contents = src.Contents
-            dst.keycode = src.keycode
-            dst.keycontents = src.keycontents
-            dst.kw_feeling = src.kw_feeling
-            dst.kw_things = src.kw_things
-            dst.kw_theme = src.kw_theme
-            dst.kw_etc = src.kw_etc
-            dst.UDate = datetime.now(CONST_TIMEZONE_KST)
-            
-            db.commit()
-            
-            resMedia = CMedia(db).selectCode(code2)
-            
-            image_path = (config["G_PATH_SBIMG"] + 
-                          resMedia.Folder + "/" + 
-                          resMedia.Code + resMedia.Hash + "_y1.jpg") if resMedia else ""
-            
-            ckeywords.set_keyword("keywords2", code2, 
-                                    string_to_list(dst.Contents, True),
-                                    string_to_list(dst.keycode, True),
-                                    string_to_list(dst.kw_etc, True),
-                                    image_path)
-            
-            context = {"request": request}
-            context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-            context["keywords2"] = ckeywords.get_keywords()["keywords2"]
-            
-            return templates.TemplateResponse("keyword.html", context)
+        if await Clogs(lite).insert(src=src.to_dict(), dest=dst.to_dict()) == True:
+            await lite.commit()
         else:
-            db.rollback()
-            context = {"request": request}
-            context["ERR"] = "Failed to find keyword content"
-            context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-            context["keywords2"] = ckeywords.get_keywords()["keywords2"]
-            return templates.TemplateResponse("keyword.html", context)
+            await lite.rollback()
+            raise ValueError("Failed to insert log")
+            
+        if await CKeyword(sql).update(dst.Code, src) == True:
+            await sql.commit()
+        else:
+            await sql.rollback()
+            raise ValueError("Failed to update keyword")
+        
+        resMedia = await CMedia(sql).selectCode(code2)
+        
+        ic(resMedia)
+        
+        image_path = (config["G_PATH_SBIMG"] + 
+                        resMedia.Folder + "/" + 
+                        resMedia.Code + resMedia.Hash + "_y1.jpg") if resMedia else ""
+        
+        ic(image_path)
+        
+        ckeywords.set_keyword("keywords2", code2, 
+                                string_to_list(dst.Contents, True),
+                                string_to_list(dst.keycode, True),
+                                string_to_list(dst.kw_etc, True),
+                                image_path)
+                    
+        context = {"request": request}
+        update_context_with_keywords(context)
+        
+        return templates.TemplateResponse("keyword.html", context)
     
-    except SQLAlchemyError as e:
-        ic(e)
-        db.rollback()
+    except (SQLAlchemyError, ValueError, LookupError) as e:
+        ic("copy_keyword", e)
+        sql.rollback()
+        lite.rollback()
         context = {"request": request}
         context["ERR"] = str(e)
-        context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-        context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+        update_context_with_keywords(context)
         return templates.TemplateResponse("keyword.html", context)    
     
     except Exception as e:
-        ic(e)
+        ic("copy_keyword", e)
         context = {"request": request}
         context["ERR"] = str(e)
-        context["keywords1"] = ckeywords.get_keywords()["keywords1"]
-        context["keywords2"] = ckeywords.get_keywords()["keywords2"]
+        update_context_with_keywords(context)
         return templates.TemplateResponse("keyword.html", context)
     
     
+@keyword_router.post("/logs")
+async def get_log1(request: Request, date: str = Form(...), session: AsyncSession = Depends(get_lite_db)):
+    try:
+        result = await Clogs(session).select(date)
+        context = {"request": request}
+        context["logs"] = result
+        
+        
+        return templates.TemplateResponse("logs.html", context)
+    
+    except Exception as e:
+        ic("logs", e)
+        context = {"request": request}
+        context["ERR"] = str(e)
+        return templates.TemplateResponse("logs.html", context)
+    
+@keyword_router.get("/logs")
+async def get_log2(request: Request, session: AsyncSession = Depends(get_lite_db)):
+
+    try:
+        result = await Clogs(session).select(datetime.now(CONST_TIMEZONE_KST), 5)
+        context = {"request": request}
+        context["logs"] = result
+        
+        ic(result)
+        
+        return templates.TemplateResponse("logs.html", context)
+    
+    except Exception as e:
+        ic("logs2", e)
+        context = {"request": request}
+        context["ERR"] = str(e)
+        return templates.TemplateResponse("logs.html", context)
 
 @keyword_router.get("/")
 async def index(request: Request):
-    
     ckeywords.init_keywords()
     context = {"request": request}
         
     return templates.TemplateResponse("keyword.html", context)
+
+
+
+def update_context_with_keywords(context):
+    # 이 부분은 ckeywords 사용법에 따라 달라질 수 있으므로 예시로 작성됩니다.
+    context["keywords1"] = ckeywords.get_keywords()["keywords1"]
+    context["keywords2"] = ckeywords.get_keywords()["keywords2"]

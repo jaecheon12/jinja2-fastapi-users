@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Log Page{% endblock %}
+
+{% block content %}
+    <h1>Log page</h1>
+
+    {% if ERR %}
+        <div class="error-text">{{ ERR }}</div>
+    {% endif %}
+
+    <form method="POST" action="/keyword/logs">
+        <input type="date" name="date">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if logs %}
+        <div class="log-table">
+            <div class="log-header">
+                <div>udate</div>
+                <div>src_code</div>
+                <div>dest_code</div>
+                <div>src_contents</div>
+                <div>src_keycode</div>
+                <div>src_keycontents</div>
+                <div>src_kw_etc</div>
+                <div>dest_contents</div>
+                <div>dest_keycode</div>
+                <div>dest_keycontents</div>
+                <div>dest_kw_etc</div>
+            </div>
+            {% for item in logs %}
+                <div class="log-row">
+                    <div>{{ item.udate }}</div>
+                    <div>{{ item.src_code }}</div>
+                    <div>{{ item.dest_code }}</div>
+                    <div>{{ item.src_contents }}</div>
+                    <div>{{ item.src_keycode }}</div>
+                    <div>{{ item.src_keycontents }}</div>
+                    <div>{{ item.src_kw_etc }}</div>
+                    <div>{{ item.dest_contents }}</div>
+                    <div>{{ item.dest_keycode }}</div>
+                    <div>{{ item.dest_keycontents }}</div>
+                    <div>{{ item.dest_kw_etc }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <!-- 모달 팝업 구조 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-text"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var logItems = document.querySelectorAll('.log-row > div');
+        
+            logItems.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    // 모달 텍스트를 div의 내용으로 설정
+                    document.getElementById('modal-text').textContent = this.textContent;
+                    // 모달 표시
+                    document.getElementById('modal').style.display = "block";
+                });
+            });
+        
+            // 모달 닫기 버튼
+            document.querySelector('.close').addEventListener('click', function() {
+                document.getElementById('modal').style.display = "none";
+            });
+        
+            // 모달 외부 클릭 시 닫기
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('modal')) {
+                    document.getElementById('modal').style.display = "none";
+                }
+            };
+        });
+    </script>
+        
+{% endblock %}

@@ -29,10 +29,7 @@ class Keyword_TM(Base):
     
     def to_dict(self):
         return {
-            "Idx": self.Idx,
-            "UserId": self.UserId,
             "Code": self.Code,
-            "Gubun": self.Gubun,
             "Contents": self.Contents,
             "keycode": self.keycode,
             "keycontents": self.keycontents,
@@ -40,12 +37,6 @@ class Keyword_TM(Base):
             "kw_things": self.kw_things,
             "kw_theme": self.kw_theme,
             "kw_etc": self.kw_etc,
-            "isflag": self.isflag,
-            "adm_check": self.adm_check,
-            "adm_naegong": self.adm_naegong,
-            "createDate": (self.createDate).isoformat(),
-            "keycodeChkBox": self.keycodeChkBox,
-            "UDate": self.UDate,
-            "videlGubunCheck": self.videlGubunCheck
+            "udate": (self.UDate).isoformat()
         }
         

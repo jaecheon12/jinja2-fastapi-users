@@ -23,33 +23,39 @@
                 {% if keywords1.image_url %}
                     <img src="{{ keywords1.image_url }}" alt="source" width="360" height="240"></image>
                 {% endif %}
-                <div >
+                <div>
                     <h2>contents</h2>
-                    {% for item in keywords1.contents %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords1.contents %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            
                 <div>
                     <h2>keycode</h2>
-                    {% for item in keywords1.keycode %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords1.keycode %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            
                 <div>
                     <h2>key_etc</h2>
-                    {% for item in keywords1.key_etc %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords1.key_etc %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
         </div>
-        <form method="POST" action="/keyword/copy">
+        <form class="copy-form" method="POST" action="/keyword/copy">
             <input type="hidden" name="code1" value="{{ keywords1.code if keywords1 }}">
             <input type="hidden" name="code2" value="{{ keywords2.code if keywords2 }}">
-            <img src="/static/right_arrow.png" alt="image" width="50" height="30"></image>
-            <button type="submit">Copy keyword</button>
+            <div clsas="div-flex-row">
+                <img src="/static/right_arrow.png" alt="image" width="50" height="30"></image>
+            </div>
+            <button type="submit">Copy</button>
         </form>
         <div class="div-flex-column">
             <form method="POST" action="/keyword/media2">
@@ -66,26 +72,72 @@
                 {% endif %}
                 <div >
                     <h2>contents</h2>
-                    {% for item in keywords2.contents %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords2.contents %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            
                 <div>
                     <h2>keycode</h2>
-                    {% for item in keywords2.keycode %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords2.keycode %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            
                 <div>
                     <h2>key_etc</h2>
-                    {% for item in keywords2.key_etc %}
-                        <p>{{ item }}</p>
-                    {% endfor %}
+                    <div class="contents-grid">
+                        {% for item in keywords2.key_etc %}
+                            <div class="content-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
         </div>
    </div>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trigger search submit on Enter key press in "input text code1"
+        const inputCode1 = document.querySelector('input[name="code"]'); // Assuming the first input is the one we're interested in
+        inputCode1.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission on Enter
+                validateAndSubmitForm(this.form); // Validate input length and submit
+            }
+        });
+    
+        // Simulate click on copy submit button on Ctrl + Alt + C key press
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.altKey && event.key === 'c') {
+                const copySubmitButton = document.querySelector('.copy-form button[type="submit"]');
+                if (copySubmitButton) {
+                    copySubmitButton.click(); // Click the copy submit button
+                }
+            }
+        });
+        
+        // Add event listener to search submit buttons
+        document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+                validateAndSubmitForm(this.form); // Validate input length and submit
+            });
+        });
+
+        function validateAndSubmitForm(form) {
+            const inputText = form.querySelector('input[type="text"][name="code"]');
+            if (inputText && inputText.value.length < 10) {
+                alert('Input must be at least 10 characters long.');
+            } else {
+                form.submit(); // Submit the form if validation passes
+            }
+        }
+    });
+    
+    </script>
+    
    
 {% endblock %}

@@ -5,13 +5,15 @@ from fastapi import FastAPI , APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles 
+from fastapi.templating import Jinja2Templates
 from src.routers.user import user_router  # Updated import
 from src.routers.keyword import keyword_router  # Updated import
-# from src.routers.auth import auth_router  # Updated import
-# from src.routers.auth import bearer_transport
+
+from src.models.lite_db import create_db_and_tables
 
 app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
@@ -35,27 +37,10 @@ app.include_router(
     tags=["keyword"],
 )
 
-# app.include_router(
-#     auth_router,
-#     prefix="/auth",
-#     tags=["auth"],
-# )
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("main.html", {"request": request})
 
-
-# @app.get("/", response_class=HTMLResponse)
-# async def read_root(request: Request):
-#     return templates.TemplateResponse("main.html", {"request": request})
-
-# @app.get("/signin", response_class=HTMLResponse)
-# async def read_signin(request: Request):
-#     return templates.TemplateResponse("signin.html", {"request": request})
-
-# @app.get("/signup", response_class=HTMLResponse)
-# async def read_signup(request: Request):
-#     return templates.TemplateResponse("signup.html", {"request": request})
-
-
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
-
+@app.on_event("startup")
+async def on_startup():
+    await create_db_and_tables()

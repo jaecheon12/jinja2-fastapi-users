@@ -40,7 +40,7 @@ dependencies = [
   "pytest",
 ]
 [tool.hatch.envs.default.scripts]
-dev = "uvicorn src.app:app --reload"
+dev = "uvicorn src.app:app --reload --host 0.0.0.0 --port 8005"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = [

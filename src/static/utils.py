@@ -86,7 +86,6 @@ def duration_string(sec: float) -> str:
 
     return s
 
-
 def string_to_list(s: str) -> list:
     return s.split(",") if s else []
 

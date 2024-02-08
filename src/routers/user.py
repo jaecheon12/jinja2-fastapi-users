@@ -20,7 +20,3 @@ async def read_signin(request: Request):
 @user_router.get("/signup", response_class=HTMLResponse)
 async def read_signup(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})
-
-@user_router.get("/keyword", response_class=HTMLResponse)
-async def read_keyword(request: Request):
-    return templates.TemplateResponse("keyword.html", {"request": request})
