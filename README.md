@@ -51,4 +51,4 @@ hatch run dev                       # 개발 서버 실행
 
 ## License
 
-`jinja2-fastapi-users` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`keyword-jinja-fastapi` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
