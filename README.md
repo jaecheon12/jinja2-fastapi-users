@@ -1,4 +1,4 @@
-# jinja2-fastapi-users
+# keyword-jinja-fastapi
 
 [![PyPI - Version](https://img.shields.io/pypi/v/jinja2-fastapi-users.svg)](https://pypi.org/project/jinja2-fastapi-users)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jinja2-fastapi-users.svg)](https://pypi.org/project/jinja2-fastapi-users)
@@ -32,8 +32,6 @@ hatch run dev                       # 개발 서버 실행
 
 ## How to use
 
-
-
 1. 컨텐츠 키워드 복사는 왼쪽에서 오른쪽으로 이루어진다.
 2. 왼쪽에 원본 컨텐츠를 불러온다. 섬네일 이미지로 컨텐츠를 확인한다.
 3. 오른쪽에 목표 컨텐츠를 불러온다. 섬네일 이미지로 컨텐츠를 확인한다.
@@ -42,11 +40,13 @@ hatch run dev                       # 개발 서버 실행
 
 
 ## tech stack
+
 - python
 - hatch : project manager
 - fastapi : backend framework
 - jinja2 : view template
 - sqlalchemy + aioodbc : mssql async orm
+
 
 ## License
 
