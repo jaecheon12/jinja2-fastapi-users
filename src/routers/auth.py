@@ -1,9 +1,7 @@
 import os
 from typing import Optional
 from fastapi_users import FastAPIUsers
-from dotenv import dotenv_values
-
-config = dotenv_values(".env")
+from src.static.config import config
 
 # bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 

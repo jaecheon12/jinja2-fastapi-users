@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from src.routers.user import user_router  # Updated import
 from src.routers.keyword import keyword_router  # Updated import
+from src.static.config import config
 
 from src.models.lite_db import create_db_and_tables
 
@@ -18,8 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    # allow_origins=allowed_origins,
+    allow_origins=config["FASTAPI_ALLOW_ORIGINS"], 
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers

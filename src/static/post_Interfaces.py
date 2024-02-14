@@ -34,47 +34,5 @@ class IVideoInfo(BaseModel):
 
 class IComplete(BaseModel):
     userId: str
-    updateMediaId: int 
-    
-class IOthers(BaseModel):
-    userId: str 
-    mediaIndex: int
-    relayIndex: int
-    msg: str
-    
-
-class IOthersUpdate(BaseModel):
-    userId: str 
-    uIndex: int
-    
-class IOthersSelect(BaseModel):
-    gid: str 
-    idx: int
-    
-class OthersMedia(BaseModel):
-    index: int
-    type: int
-    name: str
-    
-class iOthersUpload(BaseModel):
-    userId: str
-    title: str
-    mediaList: list[OthersMedia]
-    mainIndex: int
-
-class IMaker_insert(BaseModel):
-    makerName: str
-    userId: str
-    
-class IMaker_update(BaseModel):
-    makerId: int
-    state: int
-    
-class patch_status(BaseModel):
-    userId: str
-    mediaIndex: int
-    urfType: int        # 1: local, 2: youtube, 3: vimeo
-    status: int         # 0: 삭제, 1: 승인, 2: 숨김, 3: 대기
-    reason: int         # hidden reason: 1(화질), 2(요청), 3(자막), 4(기타)
-    
+    updateMediaId: int
     

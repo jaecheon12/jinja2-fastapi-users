@@ -22,10 +22,6 @@ class CKeyword:
         
     async def update(self, code: str, src: Keyword_TM) -> bool:
         try:
-            src_dict = src.to_dict().pop("udate")
-            # stmt = update(Keyword_TM).where(Keyword_TM.Code == code).values(src_dict)
-            # await self.db.execute(stmt)
-            
             stmt = update(Keyword_TM).where(Keyword_TM.Code == code).values(Contents=src.Contents,
                                                                            keycode=src.keycode,
                                                                            keycontents=src.keycontents,
@@ -33,7 +29,6 @@ class CKeyword:
                                                                            kw_things=src.kw_things,
                                                                            kw_theme=src.kw_theme,
                                                                            kw_etc=src.kw_etc)
-                
             await self.db.execute(stmt)
             
             return True
