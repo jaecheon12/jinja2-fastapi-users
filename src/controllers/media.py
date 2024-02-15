@@ -65,8 +65,10 @@ class CtrlMedia:
 
     async def selectCode(self, mediaCode: str) -> Media_TM|None:
         try:
-            result = await self.db.execute(select(Media_TM).filter(Media_TM.Code == mediaCode))
-            return result.scalars().first()
+            stmt = select(Media_TM).filter(Media_TM.Code == mediaCode)
+            result = await self.db.execute(stmt)
+
+            return result.scalars().one_or_none()
         except BaseException as e:
             ic("err selectCode: ", str(e))
             return None

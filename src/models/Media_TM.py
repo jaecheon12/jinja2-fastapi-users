@@ -76,34 +76,16 @@ class Media_TM(Base):
     
     def to_dict(self):
         return {
-            "Idx": self.Idx,
             "Code": self.Code,
             "Nation": self.Nation,
             "Country": self.Country,
             "Lang": self.Lang  ,
-            "Flag": self.Flag  ,
-            "Flag2 ": self.Flag2 ,
-            "Flag3 ": self.Flag3 ,
-            "Flag4 ": self.Flag4 ,
-            "Flag5 ": self.Flag5 ,
-            "Hit": self.Hit   ,
-            "Width ": self.Width ,
-            "Height": self.Height,
             "State": self.State,
-            "Hash": self.Hash    ,
-            "Folder": self.Folder  ,
             "OnAir": self.OnAir   ,
             "Title": self.Title   ,
             "Brand": self.Brand   ,
             "Chapter ": self.Chapter ,
             "Campaign": self.Campaign,
-            "Genre": self.Genre   ,
-            "Nochul": self.Nochul   ,
-            "Topic": self.Topic   ,
-            "Meche": self.Meche   ,
-            "PumOne  ": self.PumOne  ,
-            "PumTwo": self.PumTwo  ,
-            "PumThree": self.PumThree,
         }
     
 class Media_TM_NoFolder(Base):
