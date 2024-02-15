@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.sql_db import get_db
 from src.models.lite_db import get_lite_db, get_async_session
 from src.classes.keyword import Keywords
-from src.controllers.media import CMedia
+from src.controllers.media import CtrlMedia
 from src.controllers.keyword import CKeyword
 from src.controllers.logs import Clogs
 from src.static.utils import string_to_list
@@ -25,7 +25,7 @@ ckeywords = Keywords()
 async def select_media(request: Request, code: str = Form(...), db: Session = Depends(get_db)):
     try:
         resKeyword = await CKeyword(db).select_bycode(code)
-        resMedia = await CMedia(db).selectCode(code)
+        resMedia = await CtrlMedia(db).selectCode(code)
         
         image_path = (config["G_PATH_SBIMG"] + 
                     resMedia.Folder + "/" + 
@@ -68,7 +68,7 @@ async def select_media(request: Request, code: str = Form(...), db: Session = De
 async def select_media(request: Request, search_type: str = Form(...), code: str = Form(...), db: Session = Depends(get_db)):
     try:
         resKeyword = await CKeyword(db).select_bycode(code)
-        resMedia = await CMedia(db).selectCode(code)
+        resMedia = await CtrlMedia(db).selectCode(code)
         
         image_path = (config["G_PATH_SBIMG"] + 
                     resMedia.Folder + "/" + 
@@ -131,7 +131,7 @@ async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Fo
             await sql.rollback()
             raise ValueError("Failed to update keyword")
         
-        resMedia = await CMedia(sql).selectCode(code2)
+        resMedia = await CtrlMedia(sql).selectCode(code2)
         
         image_path = (config["G_PATH_SBIMG"] + 
                         resMedia.Folder + "/" + 

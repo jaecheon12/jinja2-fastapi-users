@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from src.routers.user import user_router  # Updated import
 from src.routers.keyword import keyword_router  # Updated import
+from src.routers.model import model_router  # Updated import
 from src.static.config import config
 
 from src.models.lite_db import create_db_and_tables
@@ -35,6 +36,12 @@ app.include_router(
     keyword_router,
     prefix="/keyword",
     tags=["keyword"],
+)
+
+app.include_router(
+    model_router,
+    prefix="/model",
+    tags=["model"],
 )
 
 @app.get("/", response_class=HTMLResponse)

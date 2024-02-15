@@ -7,10 +7,9 @@ from src.static.post_Interfaces import IVideoFile
 from src.static.const import CONST_TIMEZONE_KST
 from datetime import datetime
 from icecream import ic
-import logging
 import re
 
-class CMedia:
+class CtrlMedia:
     def __init__(self, db: AsyncSession):
         self.db = db
         
