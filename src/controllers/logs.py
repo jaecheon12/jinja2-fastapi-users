@@ -6,10 +6,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from icecream import ic
 
-class Clogs:
+class CtrlLogs:
     def __init__(self, db: AsyncSession):
         self.db = db
-    
+
     async def insert(self, src: dict, dest: dict) -> bool:
         try:
             await self.db.execute(insert(keyword_logs)
@@ -25,7 +25,7 @@ class Clogs:
                                             src_kw_theme=src.get("kw_theme", ""),
                                             src_kw_etc=src.get("kw_etc", ""),
                                             src_udate=src.get("udate", datetime.now().astimezone(CONST_TIMEZONE_KST)),
-                                            
+
                                             dest_code=dest["Code"],
                                             dest_contents=dest["Contents"],
                                             dest_keycode=dest.get("keycode", ""),
@@ -39,19 +39,19 @@ class Clogs:
         except SQLAlchemyError as e:  # SQLAlchemy 관련 예외 처리
             ic(f"ERR Clogs insert: {str(e)}")
             return False
-    
+
     async def select(self, date: datetime, inf: int = 0) -> list[dict]|None:
         try:
             stmt = select(keyword_logs).order_by(keyword_logs.id.desc())
             # stmt = select(keyword_logs).filter(func.date(keyword_logs.cdate) == date.date()).order_by(keyword_logs.id.desc())
             if inf > 0:
                 stmt = stmt.limit(inf)
-            
+
             result = await self.db.execute(stmt)
-            
+
             if result is None:
                 return []
-            
+
             rows = result.scalars().all()
             ic (rows)
             return rows

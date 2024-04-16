@@ -12,9 +12,9 @@
     <div class="div-flex-row">
         <div class="div-flex-column">
             <form method="POST" action="/keyword/media1">
-                <select name="search_type">
+                <!-- <select name="search_type">
                     <option value="code">Code</option>
-                </select>
+                </select> -->
                 <input type="text" name="code" placeholder="Search...">
                 <button type="submit">Search</button>
             </form>
@@ -59,9 +59,9 @@
         </form>
         <div class="div-flex-column">
             <form method="POST" action="/keyword/media2">
-                <select name="search_type">
+                <!-- <select name="search_type">
                     <option value="code">Code</option>
-                </select>
+                </select> -->
                 <input type="text" name="code" placeholder="Search...">
                 <button type="submit">Search</button>
             </form>
@@ -108,7 +108,7 @@
                 validateAndSubmitForm(this.form); // Validate input length and submit
             }
         });
-    
+
         // Simulate click on copy submit button on Ctrl + Alt + C key press
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.altKey && event.key === 'c') {
@@ -118,7 +118,7 @@
                 }
             }
         });
-        
+
         // Add event listener to search submit buttons
         document.querySelectorAll('form button[type="submit"]').forEach(function(button) {
             button.addEventListener('click', function(event) {
@@ -136,8 +136,8 @@
             }
         }
     });
-    
+
     </script>
-    
-   
+
+
 {% endblock %}

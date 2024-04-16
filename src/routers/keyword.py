@@ -3,12 +3,12 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.sql_db import get_db
+from src.core.sql_db import get_db
 from src.models.lite_db import get_lite_db, get_async_session
 from src.classes.keyword import Keywords
 from src.controllers.media import CtrlMedia
-from src.controllers.keyword import CKeyword
-from src.controllers.logs import Clogs
+from src.controllers.keyword import CtrlKeyword
+from src.controllers.logs import CtrlLogs
 from src.static.utils import string_to_list
 from src.static.const import CONST_TIMEZONE_KST
 from src.static.config import config
@@ -19,12 +19,11 @@ keyword_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 ckeywords = Keywords()
 
-
 @keyword_router.post("/media1")
 async def select_media1(request: Request, code: str = Form(...), db: Session = Depends(get_db)):
     try:
-        resKeyword = await CKeyword(db).select_bycode(code)
-        resMedia = await CtrlMedia(db).selectCode(code)
+        resKeyword = CtrlKeyword(db).select_bycode(code)
+        resMedia = CtrlMedia(db).selectCode(code)
 
         image_path = (config["G_PATH_SBIMG"] +
                     resMedia.Folder + "/" +
@@ -66,8 +65,8 @@ async def select_media1(request: Request, code: str = Form(...), db: Session = D
 @keyword_router.post("/media2")
 async def select_media2(request: Request, code: str = Form(...), db: Session = Depends(get_db)):
     try:
-        resKeyword = await CKeyword(db).select_bycode(code)
-        resMedia = await CtrlMedia(db).selectCode(code)
+        resKeyword = CtrlKeyword(db).select_bycode(code)
+        resMedia = CtrlMedia(db).selectCode(code)
 
         image_path = (config["G_PATH_SBIMG"] +
                     resMedia.Folder + "/" +
@@ -106,31 +105,30 @@ async def select_media2(request: Request, code: str = Form(...), db: Session = D
         update_context_with_keywords(context)
         return templates.TemplateResponse("keyword.html", context)
 
-
 @keyword_router.post("/copy")
-async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Form(...), sql: Session = Depends(get_db), lite: AsyncSession = Depends(get_async_session)):
+async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Form(...), db: Session = Depends(get_db), lite: AsyncSession = Depends(get_async_session)):
     context = {"request": request}
     try:
         if code1 == code2:
             raise ValueError("Source and destination codes must be different.")
 
-        keyword = CKeyword(sql)
-        src = await keyword.select_bycode(code1)
-        dst = await keyword.select_bycode(code2)
+        keyword = CtrlKeyword(db)
+        src = keyword.select_bycode(code1)
+        dst = keyword.select_bycode(code2)
 
-        if await Clogs(lite).insert(src=src.to_dict(), dest=dst.to_dict()):
+        if await CtrlLogs(lite).insert(src=src.to_dict(), dest=dst.to_dict()):
             await lite.commit()
         else:
             await lite.rollback()
             raise ValueError("Failed to insert log")
 
-        if await CKeyword(sql).update(dst.Code, src):
-            await sql.commit()
+        if keyword.update(dst.Code, src):
+            db.commit()
         else:
-            await sql.rollback()
+            db.rollback()
             raise ValueError("Failed to update keyword")
 
-        resMedia = await CtrlMedia(sql).selectCode(code2)
+        resMedia = CtrlMedia(db).selectCode(code2)
 
         image_path = (config["G_PATH_SBIMG"] +
                         resMedia.Folder + "/" +
@@ -149,7 +147,7 @@ async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Fo
 
     except (SQLAlchemyError, ValueError, LookupError) as e:
         ic(f"copy_keyword {str(e)}")
-        sql.rollback()
+        db.rollback()
         lite.rollback()
         context = {"request": request}
         context["ERR"] = str(e)
@@ -166,7 +164,7 @@ async def copy_keyword(request: Request, code1: str = Form(...), code2: str = Fo
 @keyword_router.post("/logs")
 async def get_log1(request: Request, date: str = Form(...), session: AsyncSession = Depends(get_lite_db)):
     try:
-        result = await Clogs(session).select(date)
+        result = await CtrlLogs(session).select(date)
         context = {"request": request}
         context["logs"] = result
 
@@ -181,7 +179,7 @@ async def get_log1(request: Request, date: str = Form(...), session: AsyncSessio
 @keyword_router.get("/logs")
 async def get_log2(request: Request, session: AsyncSession = Depends(get_lite_db)):
     try:
-        result = await Clogs(session).select(datetime.now(CONST_TIMEZONE_KST), 5)
+        result = await CtrlLogs(session).select(datetime.now(CONST_TIMEZONE_KST), 5)
         context = {"request": request}
         context["logs"] = result
 

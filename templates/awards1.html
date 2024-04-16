@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Awards1{% endblock %}
+
+{% block content %}
+    <h1>Awards1</h1>
+
+    {% if ERR %}
+        <div class="error-text">{{ ERR }}</div>
+    {% endif %}
+
+    <div class="div-flex-beetween">
+        <div class="div-flex-row">
+            <select name="awards-type">
+                <option value="all">all</option>
+                <option value="awards">awards</option>
+                <option value="festival">festival</option>
+                <option value="festival_awards">festival_awards</option>
+                <option value="festival_awards_parts">festival_awards_parts</option>
+                <option value="festival_awards_prizes">festival_awards_prizes</option>
+            </select>
+            <select name="awards-state">
+                <option value="all">all</option>
+                <option value="delete">delete</option>
+                <option value="show">show</option>
+                <option value="hide">hide</option>
+                <option value="admin">admin</option>
+                <option value="wait">wait</option>
+                <option value="reject">reject</option>
+            </select>
+        </div>
+        <div class="div-flex-row">
+            <form method="POST" action="/keyword/media1">
+                <input type="text" name="awards-name" placeholder="Search...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+
+    {% if awards %}
+        <div class="awards1-table">
+            <div class = "log-header">
+                <div>Idx</div>
+                <div>MediaIdx</div>
+                <div>FestivalAwardIdx</div>
+                <div>FestivalAwardYear</div>
+                <div>FestivalAwardPartIdx</div>
+                <div>FestivalAwardPrizeIdx</div>
+                <div>action button</div>
+            </div>
+            {% for award in awards %}
+                <div class="log-row">
+                    <div>{{ award.Idx }}</div>
+                    <div>{{ award.MediaIdx }}</div>
+                    <div>{{ award.FestivalAwardIdx }}</div>
+                    <div>{{ award.FestivalAwardYear }}</div>
+                    <div>{{ award.FestivalAwardPartIdx }}</div>
+                    <div>{{ award.FestivalAwardPrizeIdx }}</div>
+                    <div><button>show</button><button>hide</button><button>allow</button><button>reject</button></div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+
+    <div>
+    <div class="div-flex">
+        <div class="div-flex-row">
+            <form method="POST" action="/keyword/media1">
+                <button type="submit">Allow</button>
+            </form>
+        </div>
+    </div>
+    </div>
+
+   <script>
+
+    </script>
+
+
+{% endblock %}

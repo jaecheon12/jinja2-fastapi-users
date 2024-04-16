@@ -1,39 +1,36 @@
 
-from sqlalchemy import select, update
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError 
+from sqlalchemy.exc import SQLAlchemyError
 from src.models.Keyword_TM import Keyword_TM
 from icecream import ic
 
 
-class CKeyword:
-    def __init__(self, asyncdb: Session):
-        self.db = asyncdb
+class CtrlKeyword:
+    def __init__(self, db: Session):
+        self.db = db
 
-    async def select_bycode(self, code: str) -> Keyword_TM|None:
+    def select_bycode(self, code: str) -> Keyword_TM|None:
         try:
-            stmt = select(Keyword_TM).filter(Keyword_TM.Code == code)
-            result = await self.db.execute(stmt)
-
-            return result.scalars().one_or_none()
+            result = self.db.query(Keyword_TM).filter(Keyword_TM.Code == code).first()
+            return result
         except SQLAlchemyError as e:
             ic(f"ERR select_bycode: {str(e)}")
             return None
-        
-    async def update(self, code: str, src: Keyword_TM) -> bool:
+
+    def update(self, code: str, src: Keyword_TM) -> bool:
         try:
-            stmt = update(Keyword_TM).where(Keyword_TM.Code == code).values(Contents=src.Contents,
-                                                                           keycode=src.keycode,
-                                                                           keycontents=src.keycontents,
-                                                                           kw_feeling=src.kw_feeling,
-                                                                           kw_things=src.kw_things,
-                                                                           kw_theme=src.kw_theme,
-                                                                           kw_etc=src.kw_etc)
-            await self.db.execute(stmt)
-            
+            resKeyword = self.db.query(Keyword_TM).filter(Keyword_TM.Code == code).first()
+
+            if resKeyword:
+                resKeyword.Contents = src.Contents
+                resKeyword.keycode = src.keycode
+                resKeyword.keycontents = src.keycontents
+                resKeyword.kw_feeling = src.kw_feeling
+                resKeyword.kw_things = src.kw_things
+                resKeyword.kw_theme = src.kw_theme
+                resKeyword.kw_etc = src.kw_etc
             return True
         except SQLAlchemyError as e:
             ic(f"ERR update: {str(e)}")
             return False
-        
-        
+

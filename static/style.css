@@ -12,7 +12,7 @@ body, html {
 header {
     background-color: #333;
     color: white;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     text-align: center;
 }
 
@@ -89,7 +89,7 @@ form button:hover {
         padding: 1rem; /* 모바일 화면에서 패딩 조정 */
     }
 
-    .div-flex-row, 
+    .div-flex-row,
     .div-flex-column {
         flex-direction: column; /* 모바일 화면에서 플렉스 방향 조정 */
     }
@@ -110,7 +110,7 @@ form button:hover {
 }
 
 .copy-form{
-    
+
     align-items: center;
     height: 100px;
     width: 70px;
@@ -222,6 +222,6 @@ form button:hover {
 .error-text {
     color: red;
     font-weight: bolder;
-    
+
 }
 

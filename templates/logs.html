@@ -57,7 +57,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var logItems = document.querySelectorAll('.log-row > div');
-        
+
             logItems.forEach(function(item) {
                 item.addEventListener('click', function() {
                     // 모달 텍스트를 div의 내용으로 설정
@@ -66,12 +66,12 @@
                     document.getElementById('modal').style.display = "block";
                 });
             });
-        
+
             // 모달 닫기 버튼
             document.querySelector('.close').addEventListener('click', function() {
                 document.getElementById('modal').style.display = "none";
             });
-        
+
             // 모달 외부 클릭 시 닫기
             window.onclick = function(event) {
                 if (event.target == document.getElementById('modal')) {
@@ -80,5 +80,5 @@
             };
         });
     </script>
-        
+
 {% endblock %}

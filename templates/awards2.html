@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Awards2{% endblock %}
+
+{% block content %}
+    <h1>Awards2</h1>
+
+    {% if ERR %}
+        <div class="error-text">{{ ERR }}</div>
+    {% endif %}
+
+    <div class="div-flex-row">
+
+        <div class="div-flex-column">
+            <div class="div-flex-end">
+                <div class="div-flex-row">
+                    <form method="POST" action="/keyword/media1">
+                        <input type="text" name="awards-name" placeholder="Search...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            {% if awards %}
+                <div class="awards2-table1">
+                    <div class = "log-header">
+                        <div>Idx</div>
+                        <div>MediaIdx</div>
+                        <div>Title</div>
+                        <div>Media Title</div>
+                        <div>action button</div>
+                    </div>
+                    {% for award in awards %}
+                        <div class="log-row">
+                            <div>{{ award.Idx }}</div>
+                            <div>{{ award.MediaIdx }}</div>
+                            <div>title</div>
+                            <div>media title</div>
+                            <div><button>show</button><button>hide</button><button>allow</button><button>reject</button></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="div-flex-center">>>></div>
+
+        <div class="div-flex-column">
+            <div class="div-flex-end">
+                <div class="div-flex-row">
+                    <form method="POST" action="/keyword/media1">
+                        <input type="text" name="awards-name" placeholder="Search...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            {% if awards %}
+                <div class="awards2-table2">
+                    <div class = "log-header">
+                        <div>Idx</div>
+                        <div>Title</div>
+                        <div>action button</div>
+                    </div>
+                    {% for award in awards %}
+                        <div class="log-row">
+                            <div>{{ award.Idx }}</div>
+                            <div>title</div>
+                            <div><button>show</button><button>hide</button><button>allow</button><button>reject</button></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="div-flex">
+        <div class="div-flex-row">
+            <form method="POST" action="/keyword/media1">
+                <button type="submit">Allow</button>
+            </form>
+        </div>
+    </div>
+
+   <script>
+    </script>
+
+
+{% endblock %}

@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Welcome{% endblock %}</title>
-    <link rel="stylesheet" href="/static/style2.css">
+    <link rel="stylesheet" href="/static/style1.css">
 </head>
 <body>
     {% include 'header.html' %}
-    {% include 'nav.html' %}
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div class="div-flex1-row">
+        {% include 'nav.html' %}
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
 </body>
 </html>

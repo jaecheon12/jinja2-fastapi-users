@@ -12,7 +12,6 @@ body, html {
 header {
     background-color: #333;
     color: white;
-    padding: 1rem 0;
     text-align: center;
 }
 
@@ -21,7 +20,7 @@ nav {
     display: flex;
     justify-content: center;
     background-color: #eee;
-    padding: 0.5rem 0;
+    padding: 1.5rem 20px;
 }
 
 nav ul {
@@ -45,28 +44,23 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
 }
 
 /* 로그인 폼 스타일 */
 form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
 
-    width: 80%; /* 변경됨 */
     max-width: 300px;
-    padding: 13px;
     gap: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: white;
 }
 
 form input, form button {
-    padding: 0.75rem;
-    margin-bottom: 1rem;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
@@ -76,6 +70,13 @@ form button {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+select {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 form button:hover {
@@ -89,7 +90,7 @@ form button:hover {
         padding: 1rem; /* 모바일 화면에서 패딩 조정 */
     }
 
-    .div-flex-row, 
+    .div-flex-row,
     .div-flex-column {
         flex-direction: column; /* 모바일 화면에서 플렉스 방향 조정 */
     }
@@ -99,18 +100,45 @@ form button:hover {
     display: flex;
     flex-direction: row; /* 플렉스 방향을 행으로 설정 */
     gap: 10px; /* 플렉스 항목 간의 간격 */
-
 }
-.div-flex-column {
 
+.div-flex-column {
     display: flex;
     flex-direction: column; /* 플렉스 방향을 행으로 설정 */
     align-items: center;
     gap: 10px; /* 플렉스 항목 간의 간격 */
 }
 
+.div-flex1-row {
+    flex: 1;
+    display: flex;
+    flex-direction: row; /* 플렉스 방향을 행으로 설정 */
+    gap: 10px; /* 플렉스 항목 간의 간격 */
+}
+
+.div-flex1-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* 플렉스 방향을 행으로 설정 */
+    align-items: center;
+    gap: 10px; /* 플렉스 항목 간의 간격 */
+}
+
+.div-grid-column {
+    display: grid;
+    grid-template-columns: 1fr; /* 한 컬럼만 가지는 그리드 */
+    gap: 10px; /* 항목 간의 간격 */
+    align-items: center;
+}
+
+.div-grid-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6개의 동일한 너비 컬럼 */
+    gap: 10px; /* 항목 간의 간격 */
+}
+
 .copy-form{
-    
+
     align-items: center;
     height: 100px;
     width: 70px;
@@ -132,6 +160,26 @@ form button:hover {
     font-size: 15px;
 }
 
+.awards1-table {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(120px, 1fr)); /* 11개의 컬럼으로 분할, 최소 너비를 120px로 설정 */
+    gap: 3px; /* 그리드 항목 간의 간격 */
+    margin-bottom: 20px; /* 하단 마진 */
+}
+
+.awards2-table1 {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr)); /* 11개의 컬럼으로 분할, 최소 너비를 120px로 설정 */
+    gap: 3px; /* 그리드 항목 간의 간격 */
+    margin-bottom: 20px; /* 하단 마진 */
+}
+
+.awards2-table2 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr)); /* 11개의 컬럼으로 분할, 최소 너비를 120px로 설정 */
+    gap: 3px; /* 그리드 항목 간의 간격 */
+    margin-bottom: 20px; /* 하단 마진 */
+}
 
 .log-table {
     display: grid;
@@ -158,10 +206,34 @@ form button:hover {
 
 .log-row > div {
     font-size: 13px;
-    max-height: 120px; /* 최대 높이 제한 */
+    max-height: 150px; /* 최대 높이 제한 */
     overflow: hidden; /* 넘치는 내용 숨김 */
     text-overflow: ellipsis; /* 넘치는 텍스트를 ... 으로 표현 */
     cursor: pointer; /* 호버 시 커서 변경 */
+}
+
+.div-flex {
+    display: flex;
+    gap: 10px;
+}
+
+.div-flex-beetween {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    width: 100%;
+}
+
+.div-flex-end {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+}
+
+.div-flex-center {
+    display: flex;
+    align-items: center;
 }
 
 /* 반응형 디자인을 위한 미디어 쿼리 */
@@ -222,6 +294,23 @@ form button:hover {
 .error-text {
     color: red;
     font-weight: bolder;
-    
+
 }
 
+.h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.h3 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.h4 {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
