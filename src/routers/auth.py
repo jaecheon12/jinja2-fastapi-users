@@ -1,7 +1,4 @@
-import os
-from typing import Optional
 from fastapi_users import FastAPIUsers
-from src.static.config import config
 
 # bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 

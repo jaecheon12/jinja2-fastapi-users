@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, BigInteger, DateTime, SmallInteger
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-from typing import Optional
 from src.static.const import CONST_TIMEZONE_KST
 
 Base = declarative_base()

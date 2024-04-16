@@ -3,7 +3,6 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 from src.models.Maker_TM import Maker_TM as Maker
 from icecream import ic
-import logging
 
 class CtrlMaker:
     def __init__(self, db: Session):

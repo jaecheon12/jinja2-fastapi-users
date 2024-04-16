@@ -2,9 +2,9 @@
 
 from fastapi import Depends
 from sqlalchemy import Integer, Column
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from typing import List, Optional, AsyncGenerator
+from typing import Optional, AsyncGenerator
 from datetime import datetime
 
 

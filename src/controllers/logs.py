@@ -1,7 +1,7 @@
 from src.models.lite_db import keyword_logs
 from datetime import datetime
 from src.static.const import CONST_TIMEZONE_KST
-from sqlalchemy import select, insert, func
+from sqlalchemy import select, insert
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from icecream import ic

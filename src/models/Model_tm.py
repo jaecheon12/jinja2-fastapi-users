@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql import func
 from sqlalchemy.dialects.mssql import BIGINT
 
 Base = declarative_base()
